@@ -34,6 +34,15 @@ api.interceptors.response.use(
       status: response.status,
       data: response.data,
     });
+
+    // Validate response data structure
+    if (response.config.url?.includes('/analyze') && response.data) {
+      const data = response.data;
+      if (!data.jd_match && !data.error) {
+        console.warn('Invalid response structure from analyze endpoint');
+      }
+    }
+
     return response;
   },
   (error) => {
@@ -41,23 +50,33 @@ api.interceptors.response.use(
       status: error.response?.status,
       data: error.response?.data,
       message: error.message,
+      url: error.config?.url,
     });
 
     // Handle specific error cases
     if (error.code === 'ECONNABORTED') {
-      throw new Error('Request timeout. The analysis is taking longer than expected.');
+      throw new Error('Request timeout. The AI analysis is taking longer than expected. Please try again.');
     }
 
     if (error.response?.status === 413) {
-      throw new Error('File too large. Please upload a smaller PDF file.');
+      throw new Error('File too large. Please upload a PDF file smaller than 16MB.');
     }
 
     if (error.response?.status === 415) {
-      throw new Error('Unsupported file type. Please upload a PDF file.');
+      throw new Error('Unsupported file type. Please upload a PDF file only.');
+    }
+
+    if (error.response?.status === 400) {
+      const errorMsg = error.response?.data?.error || 'Bad request. Please check your input.';
+      throw new Error(errorMsg);
     }
 
     if (error.response?.status >= 500) {
-      throw new Error('Server error. Please try again later.');
+      throw new Error('Server error. The AI service may be temporarily unavailable. Please try again later.');
+    }
+
+    if (error.code === 'ERR_NETWORK') {
+      throw new Error('Network error. Please check your internet connection and try again.');
     }
 
     return Promise.reject(error);
@@ -66,6 +85,12 @@ api.interceptors.response.use(
 
 export const analyzeResume = async (request: AnalysisRequest): Promise<AnalysisResponse> => {
   try {
+    console.log('Sending analyze request:', {
+      jobDescriptionLength: request.job_description.length,
+      resumeFileName: request.resume.name,
+      resumeSize: request.resume.size,
+    });
+
     const formData = new FormData();
     formData.append('job_description', request.job_description);
     formData.append('resume', request.resume);
@@ -76,12 +101,47 @@ export const analyzeResume = async (request: AnalysisRequest): Promise<AnalysisR
       },
     });
 
-    return response.data;
+    // Validate response structure
+    const data = response.data;
+    if (!data.jd_match || !data.profile_summary) {
+      console.warn('Incomplete response from API:', data);
+
+      // Return a fallback response if data is incomplete
+      return {
+        jd_match: data.jd_match || '0%',
+        missing_keywords: data.missing_keywords || [],
+        profile_summary: data.profile_summary || 'Analysis completed but summary unavailable.'
+      };
+    }
+
+    console.log('Analysis successful:', {
+      match: data.jd_match,
+      keywordsCount: data.missing_keywords?.length || 0,
+      summaryLength: data.profile_summary?.length || 0,
+    });
+
+    return data;
   } catch (error: any) {
+    console.error('Analyze request failed:', error);
+
     // Re-throw with more specific error message
     if (error.response?.data?.error) {
       throw new Error(error.response.data.error);
     }
+
+    // Handle cases where the response contains partial data
+    if (error.response?.data && typeof error.response.data === 'object') {
+      const data = error.response.data;
+      if (data.jd_match || data.profile_summary) {
+        console.log('Partial data received despite error, using it');
+        return {
+          jd_match: data.jd_match || '0%',
+          missing_keywords: data.missing_keywords || [],
+          profile_summary: data.profile_summary || 'Analysis partially completed.'
+        };
+      }
+    }
+
     throw error;
   }
 };
