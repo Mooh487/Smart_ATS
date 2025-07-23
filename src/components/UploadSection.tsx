@@ -26,29 +26,51 @@ export const UploadSection: React.FC = () => {
     setError(null);
 
     try {
+      toast.loading('Analyzing your resume...', { id: 'analysis' });
+
       const response = await analyzeResume({
         job_description: jobDescription,
         resume: file!
       });
 
       // Parse the match score percentage
-      const matchScore = parseInt(response.jd_match.replace('%', ''));
+      let matchScore = 0;
+      if (response.jd_match) {
+        const scoreStr = response.jd_match.toString().replace('%', '');
+        matchScore = parseInt(scoreStr) || 0;
+      }
 
       const result = {
         matchScore,
-        missingKeywords: response.missing_keywords,
-        profileSummary: response.profile_summary,
+        missingKeywords: response.missing_keywords || [],
+        profileSummary: response.profile_summary || 'No summary available',
         timestamp: new Date()
       };
 
       setAnalysisResult(result);
-      toast.success('Analysis completed successfully!');
+      toast.success('Analysis completed successfully!', { id: 'analysis' });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.detail || 
-                          error.message || 
-                          'Failed to analyze resume. Please try again.';
+      console.error('Analysis error:', error);
+
+      let errorMessage = 'Failed to analyze resume. Please try again.';
+
+      // Handle different types of errors
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.status === 413) {
+        errorMessage = 'File too large. Please upload a smaller PDF file.';
+      } else if (error.response?.status === 415) {
+        errorMessage = 'Unsupported file type. Please upload a PDF file.';
+      } else if (error.response?.status >= 500) {
+        errorMessage = 'Server error. Please try again later.';
+      } else if (error.code === 'NETWORK_ERROR') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+
       setError(errorMessage);
-      toast.error(errorMessage);
+      toast.error(errorMessage, { id: 'analysis' });
     } finally {
       setAnalyzing(false);
     }

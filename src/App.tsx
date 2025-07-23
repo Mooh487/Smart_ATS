@@ -6,6 +6,7 @@ import { Hero } from './components/Hero';
 import { UploadSection } from './components/UploadSection';
 import { AnalysisResults } from './components/AnalysisResults';
 import { AnalysisProgress } from './components/AnalysisProgress';
+import { ConnectionStatus } from './components/ConnectionStatus';
 import { Footer } from './components/Footer';
 import { useAnalysisStore } from './store/analysisStore';
 
@@ -66,7 +67,8 @@ function App() {
         </main>
         
         <AnalysisProgress isAnalyzing={isAnalyzing} />
-        
+        <ConnectionStatus />
+
         <Footer />
       </div>
     </Router>
