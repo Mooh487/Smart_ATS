@@ -55,9 +55,10 @@ export const Header: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <>
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg">
@@ -142,147 +143,162 @@ export const Header: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile menu button - Always visible on small screens */}
+          <div className="flex md:hidden">
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="relative p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              onClick={() => {
+                console.log(
+                  "Mobile menu button clicked, current state:",
+                  isMobileMenuOpen
+                );
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+              }}
+              className="relative p-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors border border-gray-200"
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
+              type="button"
             >
-              <div className="w-6 h-6 relative">
+              <div className="w-6 h-6 flex items-center justify-center">
                 {isMobileMenuOpen ? (
-                  <X className="w-6 h-6 transform transition-transform duration-200" />
+                  <X className="w-6 h-6" />
                 ) : (
-                  <Menu className="w-6 h-6 transform transition-transform duration-200" />
+                  <Menu className="w-6 h-6" />
                 )}
               </div>
             </button>
           </div>
+          </div>
         </div>
+      </header>
 
-        {/* Mobile menu */}
-        {isMobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <div
-              className="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-hidden="true"
-            />
+      {/* Mobile menu - Rendered outside header for proper positioning */}
+      {isMobileMenuOpen && (
+        <>
+          {console.log(
+            "Mobile menu is rendering, isMobileMenuOpen:",
+            isMobileMenuOpen
+          )}
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 block md:hidden"
+            onClick={() => {
+              console.log("Backdrop clicked, closing menu");
+              setIsMobileMenuOpen(false);
+            }}
+            aria-hidden="true"
+          />
 
-            {/* Mobile menu panel */}
-            <div className="md:hidden border-t border-gray-200 bg-white shadow-lg relative z-50 animate-slide-down">
-              <div className="px-4 py-4 space-y-2">
-                {isAuthenticated ? (
-                  <>
-                    {/* User Welcome Message */}
-                    <div className="px-3 py-2 border-b border-gray-100 mb-3">
-                      <p className="text-sm font-medium text-gray-900">
-                        Welcome, {user?.firstName}
-                      </p>
-                      <p className="text-xs text-gray-500">{user?.email}</p>
+          {/* Mobile menu panel */}
+          <div className="fixed top-16 left-0 right-0 bg-white shadow-xl z-50 block md:hidden animate-slide-down border-t border-gray-200 min-h-[200px]">
+            <div className="px-4 py-6 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
+              {isAuthenticated ? (
+                <>
+                  {/* User Welcome Message */}
+                  <div className="px-3 py-2 border-b border-gray-100 mb-3">
+                    <p className="text-sm font-medium text-gray-900">
+                      Welcome, {user?.firstName}
+                    </p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+
+                  {/* Navigation Links */}
+                  <Link
+                    to="/analyze"
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      isActivePage("/analyze")
+                        ? "text-blue-600 bg-blue-50 border border-blue-200"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Zap className="w-5 h-5" />
+                    <span>Analyze Resume</span>
+                  </Link>
+
+                  <Link
+                    to="/dashboard"
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      isActivePage("/dashboard")
+                        ? "text-blue-600 bg-blue-50 border border-blue-200"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    <span>Dashboard</span>
+                  </Link>
+
+                  <Link
+                    to="/profile"
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      isActivePage("/profile")
+                        ? "text-blue-600 bg-blue-50 border border-blue-200"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="w-5 h-5" />
+                    <span>Profile</span>
+                  </Link>
+
+                  {/* Logout Button */}
+                  <div className="pt-3 mt-3 border-t border-gray-100">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50 w-full text-left transition-colors"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Home Link for non-authenticated users */}
+                  <Link
+                    to="/"
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      isActivePage("/")
+                        ? "text-blue-600 bg-blue-50 border border-blue-200"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Target className="w-5 h-5" />
+                    <span>Home</span>
+                  </Link>
+
+                  {/* Info Section */}
+                  <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <FileText className="w-4 h-4" />
+                      <span>Optimize your resume for ATS</span>
                     </div>
+                  </div>
 
-                    {/* Navigation Links */}
+                  {/* Auth Buttons */}
+                  <div className="pt-3 space-y-2">
                     <Link
-                      to="/analyze"
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActivePage("/analyze")
-                          ? "text-blue-600 bg-blue-50 border border-blue-200"
-                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                      }`}
+                      to="/login"
+                      className="block w-full px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 text-center border border-gray-200 transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <Zap className="w-5 h-5" />
-                      <span>Analyze Resume</span>
+                      Login
                     </Link>
-
                     <Link
-                      to="/dashboard"
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActivePage("/dashboard")
-                          ? "text-blue-600 bg-blue-50 border border-blue-200"
-                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                      }`}
+                      to="/signup"
+                      className="block w-full px-4 py-3 rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700 text-center transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <BarChart3 className="w-5 h-5" />
-                      <span>Dashboard</span>
+                      Sign Up
                     </Link>
-
-                    <Link
-                      to="/profile"
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActivePage("/profile")
-                          ? "text-blue-600 bg-blue-50 border border-blue-200"
-                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <User className="w-5 h-5" />
-                      <span>Profile</span>
-                    </Link>
-
-                    {/* Logout Button */}
-                    <div className="pt-3 mt-3 border-t border-gray-100">
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50 w-full text-left transition-colors"
-                      >
-                        <LogOut className="w-5 h-5" />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Home Link for non-authenticated users */}
-                    <Link
-                      to="/"
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        isActivePage("/")
-                          ? "text-blue-600 bg-blue-50 border border-blue-200"
-                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Target className="w-5 h-5" />
-                      <span>Home</span>
-                    </Link>
-
-                    {/* Info Section */}
-                    <div className="px-4 py-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-2 text-sm text-gray-600">
-                        <FileText className="w-4 h-4" />
-                        <span>Optimize your resume for ATS</span>
-                      </div>
-                    </div>
-
-                    {/* Auth Buttons */}
-                    <div className="pt-3 space-y-2">
-                      <Link
-                        to="/login"
-                        className="block w-full px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 text-center border border-gray-200 transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        to="/signup"
-                        className="block w-full px-4 py-3 rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700 text-center transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Sign Up
-                      </Link>
-                    </div>
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              )}
             </div>
-          </>
-        )}
-      </div>
-    </header>
+          </div>
+        </>
+      )}
+    </>
   );
 };
