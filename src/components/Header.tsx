@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FileText,
@@ -26,6 +26,33 @@ export const Header: React.FC = () => {
   };
 
   const isActivePage = (path: string) => location.pathname === path;
+
+  // Handle escape key and route changes
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("keydown", handleEscape);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -119,90 +146,141 @@ export const Header: React.FC = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className="relative p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              <div className="w-6 h-6 relative">
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6 transform transition-transform duration-200" />
+                ) : (
+                  <Menu className="w-6 h-6 transform transition-transform duration-200" />
+                )}
+              </div>
             </button>
           </div>
         </div>
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
-            <div className="space-y-3">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/analyze"
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                      isActivePage("/analyze")
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Zap className="w-5 h-5" />
-                    <span>Analyze</span>
-                  </Link>
-                  <Link
-                    to="/dashboard"
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                      isActivePage("/dashboard")
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <BarChart3 className="w-5 h-5" />
-                    <span>Dashboard</span>
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                      isActivePage("/profile")
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <User className="w-5 h-5" />
-                    <span>Profile</span>
-                  </Link>
-                  <div className="px-3 py-2 text-sm text-gray-600">
-                    Welcome, {user?.firstName}
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 w-full text-left"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Mobile menu panel */}
+            <div className="md:hidden border-t border-gray-200 bg-white shadow-lg relative z-50 animate-slide-down">
+              <div className="px-4 py-4 space-y-2">
+                {isAuthenticated ? (
+                  <>
+                    {/* User Welcome Message */}
+                    <div className="px-3 py-2 border-b border-gray-100 mb-3">
+                      <p className="text-sm font-medium text-gray-900">
+                        Welcome, {user?.firstName}
+                      </p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <Link
+                      to="/analyze"
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActivePage("/analyze")
+                          ? "text-blue-600 bg-blue-50 border border-blue-200"
+                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Zap className="w-5 h-5" />
+                      <span>Analyze Resume</span>
+                    </Link>
+
+                    <Link
+                      to="/dashboard"
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActivePage("/dashboard")
+                          ? "text-blue-600 bg-blue-50 border border-blue-200"
+                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <BarChart3 className="w-5 h-5" />
+                      <span>Dashboard</span>
+                    </Link>
+
+                    <Link
+                      to="/profile"
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActivePage("/profile")
+                          ? "text-blue-600 bg-blue-50 border border-blue-200"
+                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span>Profile</span>
+                    </Link>
+
+                    {/* Logout Button */}
+                    <div className="pt-3 mt-3 border-t border-gray-100">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50 w-full text-left transition-colors"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Home Link for non-authenticated users */}
+                    <Link
+                      to="/"
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                        isActivePage("/")
+                          ? "text-blue-600 bg-blue-50 border border-blue-200"
+                          : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Target className="w-5 h-5" />
+                      <span>Home</span>
+                    </Link>
+
+                    {/* Info Section */}
+                    <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-2 text-sm text-gray-600">
+                        <FileText className="w-4 h-4" />
+                        <span>Optimize your resume for ATS</span>
+                      </div>
+                    </div>
+
+                    {/* Auth Buttons */}
+                    <div className="pt-3 space-y-2">
+                      <Link
+                        to="/login"
+                        className="block w-full px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 text-center border border-gray-200 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/signup"
+                        className="block w-full px-4 py-3 rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700 text-center transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </header>
