@@ -1,6 +1,7 @@
 export interface AnalysisRequest {
   job_description: string;
   resume: File;
+  job_title?: string;
 }
 
 export interface AnalysisResponse {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Target, Heart } from 'lucide-react';
+import React from "react";
+import { Target } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
@@ -12,20 +12,22 @@ export const Footer: React.FC = () => {
             </div>
             <h3 className="text-xl font-bold text-gray-900">Smart ATS</h3>
           </div>
-          
+
           <p className="text-gray-600 mb-4">
             Helping job seekers optimize their resumes for ATS compatibility
           </p>
-          
+
           <div className="flex items-center justify-center space-x-1 text-sm text-gray-500">
-            <span>Made with</span>
-            <Heart className="w-4 h-4 text-red-500" />
-            <span>for job seekers everywhere</span>
+            <span>
+              Made with ♥️ for Job Seekers Everywhere, by the Algorithmia SE
+              Open Source Team
+            </span>
           </div>
-          
+
           <div className="mt-6 pt-6 border-t border-gray-200">
             <p className="text-xs text-gray-400">
-              © 2025 Smart ATS. All rights reserved. | Privacy Policy | Terms of Service
+              © 2025 Smart ATS. All rights reserved. | Privacy Policy | Terms of
+              Service
             </p>
           </div>
         </div>
