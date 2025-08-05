@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { AnalyzePage } from "./pages/AnalyzePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -45,6 +46,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="analyze"
+                element={
+                  <ProtectedRoute>
+                    <AnalyzePage />
                   </ProtectedRoute>
                 }
               />
