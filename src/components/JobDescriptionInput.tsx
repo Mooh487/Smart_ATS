@@ -70,30 +70,37 @@ export const JobDescriptionInput: React.FC = () => {
         />
       </div>
 
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => setShowTemplates(!showTemplates)}
-          className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-        >
-          <Sparkles className="w-4 h-4" />
-          Templates
-        </button>
-        <div className="flex-1 flex gap-2">
+      <div className="space-y-3 mb-4">
+        {/* Templates Button */}
+        <div className="flex justify-center sm:justify-start">
+          <button
+            onClick={() => setShowTemplates(!showTemplates)}
+            className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            <Sparkles className="w-4 h-4" />
+            Templates
+          </button>
+        </div>
+
+        {/* URL Extract Section */}
+        <div className="space-y-2">
           <input
             type="url"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder="Paste job posting URL"
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-          <button
-            onClick={extractFromUrl}
-            disabled={!urlInput.trim()}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <LinkIcon className="w-4 h-4" />
-            Extract
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={extractFromUrl}
+              disabled={!urlInput.trim()}
+              className="flex items-center gap-2 px-6 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <LinkIcon className="w-4 h-4" />
+              Extract
+            </button>
+          </div>
         </div>
       </div>
 
