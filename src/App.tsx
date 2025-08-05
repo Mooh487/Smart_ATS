@@ -1,77 +1,59 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { UploadSection } from './components/UploadSection';
-import { AnalysisResults } from './components/AnalysisResults';
-import { AnalysisProgress } from './components/AnalysisProgress';
-import { ConnectionStatus } from './components/ConnectionStatus';
-import { Footer } from './components/Footer';
-import { useAnalysisStore } from './store/analysisStore';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./contexts/AuthContext";
+import { Layout } from "./components/Layout";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { SignUpPage } from "./pages/SignUpPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
-  const { analysisResult, isAnalyzing, reset } = useAnalysisStore();
-  const [showUpload, setShowUpload] = React.useState(false);
-
-  const handleGetStarted = () => {
-    setShowUpload(true);
-  };
-
-  const handleNewAnalysis = () => {
-    reset();
-    setShowUpload(true);
-  };
-
-  const scrollToUpload = () => {
-    setShowUpload(true);
-    setTimeout(() => {
-      const uploadSection = document.getElementById('upload-section');
-      uploadSection?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-          }}
-        />
-        
-        <Header />
-        
-        <main>
-          {!showUpload && !analysisResult && (
-            <Hero onGetStarted={handleGetStarted} />
-          )}
-          
-          {showUpload && !analysisResult && (
-            <div id="upload-section">
-              <UploadSection />
-            </div>
-          )}
-          
-          {analysisResult && (
-            <AnalysisResults 
-              result={analysisResult} 
-              onNewAnalysis={handleNewAnalysis}
-            />
-          )}
-        </main>
-        
-        <AnalysisProgress isAnalyzing={isAnalyzing} />
-        <ConnectionStatus />
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-50">
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
+            }}
+          />
 
-        <Footer />
-      </div>
-    </Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="signup" element={<SignUpPage />} />
+              <Route
+                path="dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
