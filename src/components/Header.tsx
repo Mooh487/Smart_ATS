@@ -59,114 +59,118 @@ export const Header: React.FC = () => {
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg">
-              <Target className="w-6 h-6 text-white" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-gray-900">Smart ATS</h1>
-              <p className="text-sm text-gray-500">Resume Analyzer</p>
-            </div>
-          </Link>
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold text-gray-900">Smart ATS</h1>
+                <p className="text-sm text-gray-500">Resume Analyzer</p>
+              </div>
+            </Link>
 
-          {/* Center - Auth Buttons (for non-authenticated users) */}
-          {!isAuthenticated && (
-            <div className="hidden md:flex items-center space-x-4">
-              <Link to="/login">
-                <Button variant="ghost" size="sm">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup">
-                <Button variant="primary" size="sm">
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
-          )}
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/analyze"
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActivePage("/analyze")
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <Zap className="w-4 h-4" />
-                  <span>Analyze</span>
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActivePage("/dashboard")
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  <span>Dashboard</span>
-                </Link>
-                <Link
-                  to="/profile"
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActivePage("/profile")
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <User className="w-4 h-4" />
-                  <span>Profile</span>
-                </Link>
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-600">
-                    Welcome, {user?.firstName}
-                  </span>
-                  <Button variant="outline" size="sm" onClick={handleLogout}>
-                    <LogOut className="w-4 h-4 mr-1" />
-                    Logout
+            {/* Center - Auth Buttons (for non-authenticated users) */}
+            {!isAuthenticated && (
+              <div className="hidden md:flex items-center space-x-4">
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">
+                    Login
                   </Button>
-                </div>
-              </>
-            ) : (
-              <div className="hidden lg:flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-gray-400" />
-                <span className="text-sm text-gray-600">
-                  Optimize your resume for ATS
-                </span>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="primary" size="sm">
+                    Sign Up
+                  </Button>
+                </Link>
               </div>
             )}
-          </div>
 
-          {/* Mobile menu button - Always visible on small screens */}
-          <div className="flex md:hidden">
-            <button
-              onClick={() => {
-                console.log(
-                  "Mobile menu button clicked, current state:",
-                  isMobileMenuOpen
-                );
-                setIsMobileMenuOpen(!isMobileMenuOpen);
-              }}
-              className="relative p-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors border border-gray-200"
-              aria-label="Toggle mobile menu"
-              aria-expanded={isMobileMenuOpen}
-              type="button"
-            >
-              <div className="w-6 h-6 flex items-center justify-center">
-                {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </div>
-            </button>
-          </div>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/analyze"
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActivePage("/analyze")
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span>Analyze</span>
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActivePage("/dashboard")
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActivePage("/profile")
+                        ? "text-blue-600 bg-blue-50"
+                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Profile</span>
+                  </Link>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm text-gray-600">
+                      Welcome, {user?.firstName}
+                    </span>
+                    <Button variant="outline" size="sm" onClick={handleLogout}>
+                      <LogOut className="w-4 h-4 mr-1" />
+                      Logout
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="hidden lg:flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-gray-400" />
+                  <span className="text-sm text-gray-600">
+                    Optimize your resume for ATS
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile menu button - Always visible on small screens */}
+            <div className="flex md:hidden">
+              <button
+                onClick={() => {
+                  console.log(
+                    "Mobile menu button clicked, current state:",
+                    isMobileMenuOpen
+                  );
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                }}
+                className="relative p-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors border-2 border-gray-300 bg-white shadow-sm"
+                aria-label="Toggle mobile menu"
+                aria-expanded={isMobileMenuOpen}
+                type="button"
+              >
+                <div className="w-6 h-6 flex items-center justify-center">
+                  {isMobileMenuOpen ? (
+                    <X className="w-6 h-6" />
+                  ) : (
+                    <Menu className="w-6 h-6" />
+                  )}
+                </div>
+                {/* Debug indicator */}
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                  {isMobileMenuOpen ? "✓" : "☰"}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -189,8 +193,16 @@ export const Header: React.FC = () => {
           />
 
           {/* Mobile menu panel */}
-          <div className="fixed top-16 left-0 right-0 bg-white shadow-xl z-50 block md:hidden animate-slide-down border-t border-gray-200 min-h-[200px]">
-            <div className="px-4 py-6 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div
+            className="fixed top-16 left-0 right-0 bg-white shadow-2xl z-50 md:hidden border-t border-gray-200"
+            style={{
+              display: "block",
+              minHeight: "200px",
+              maxHeight: "calc(100vh - 4rem)",
+              overflowY: "auto",
+            }}
+          >
+            <div className="px-4 py-6 space-y-3">
               {isAuthenticated ? (
                 <>
                   {/* User Welcome Message */}
