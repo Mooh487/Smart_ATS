@@ -2,7 +2,7 @@ import axios from "axios";
 import { AnalysisRequest, AnalysisResponse } from "../types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://api-mysmartats.onrender.com";
+  import.meta.env.VITE_API_URL || "https://mysmartatsapi.onrender.com";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

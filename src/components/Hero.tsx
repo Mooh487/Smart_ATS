@@ -19,17 +19,17 @@ export const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
     }
   };
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-100 py-20">
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-brand-dark-bg py-20 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-brand-light-text leading-tight">
             Beat the ATS,
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-ats-teal-400 to-ats-teal-600">
               {" "}
               Land Your Dream Job
             </span>
           </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-xl text-gray-600 leading-relaxed">
+          <p className="mt-6 max-w-3xl mx-auto text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
             Upload your resume and job description to get AI-powered insights,
             missing keyword analysis, and actionable recommendations to optimize
             your application for Applicant Tracking Systems.
@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({ onGetStarted }) => {
           <div className="mt-10">
             <button
               onClick={handleAnalyzeClick}
-              className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-8 py-4 text-lg font-semibold text-brand-light-text bg-gradient-to-r from-ats-teal-400 to-ats-teal-500 rounded-xl hover:from-ats-teal-500 hover:to-ats-teal-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               {isAuthenticated
                 ? "Analyze My Resume"
