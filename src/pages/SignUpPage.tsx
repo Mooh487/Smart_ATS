@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Target, Check } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Card } from '../components/ui/Card';
-import { Container } from '../components/ui/Container';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Target, Check } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Card } from "../components/ui/Card";
+import { Container } from "../components/ui/Container";
+import toast from "react-hot-toast";
 
 export const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -28,29 +28,29 @@ export const SignUpPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = "First name is required";
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = "Last name is required";
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -59,7 +59,7 @@ export const SignUpPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -70,10 +70,12 @@ export const SignUpPage: React.FC = () => {
         email: formData.email,
         password: formData.password,
       });
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      toast.success("Account created successfully!");
+      navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Sign up failed. Please try again.');
+      toast.error(
+        error.response?.data?.message || "Sign up failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -81,18 +83,18 @@ export const SignUpPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const passwordRequirements = [
-    { text: 'At least 8 characters', met: formData.password.length >= 8 },
-    { text: 'Contains uppercase letter', met: /[A-Z]/.test(formData.password) },
-    { text: 'Contains lowercase letter', met: /[a-z]/.test(formData.password) },
-    { text: 'Contains number', met: /\d/.test(formData.password) },
+    { text: "At least 8 characters", met: formData.password.length >= 8 },
+    { text: "Contains uppercase letter", met: /[A-Z]/.test(formData.password) },
+    { text: "Contains lowercase letter", met: /[a-z]/.test(formData.password) },
+    { text: "Contains number", met: /\d/.test(formData.password) },
   ];
 
   return (
@@ -104,8 +106,12 @@ export const SignUpPage: React.FC = () => {
             <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl mx-auto mb-4">
               <Target className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
-            <p className="mt-2 text-gray-600">Join Smart ATS and optimize your resume</p>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Create your account
+            </h2>
+            <p className="mt-2 text-gray-600">
+              Join Smart ATS and optimize your resume
+            </p>
           </div>
 
           <Card>
@@ -151,7 +157,7 @@ export const SignUpPage: React.FC = () => {
               <div className="relative">
                 <Input
                   label="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -159,11 +165,13 @@ export const SignUpPage: React.FC = () => {
                   placeholder="Create a strong password"
                   autoComplete="new-password"
                   required
+                  className="pr-12"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 z-10"
                   onClick={() => setShowPassword(!showPassword)}
+                  style={{ top: "2.25rem" }}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -176,14 +184,22 @@ export const SignUpPage: React.FC = () => {
               {/* Password Requirements */}
               {formData.password && (
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700">Password requirements:</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    Password requirements:
+                  </p>
                   <div className="space-y-1">
                     {passwordRequirements.map((req, index) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <Check 
-                          className={`w-4 h-4 ${req.met ? 'text-green-500' : 'text-gray-300'}`} 
+                        <Check
+                          className={`w-4 h-4 ${
+                            req.met ? "text-green-500" : "text-gray-300"
+                          }`}
                         />
-                        <span className={`text-sm ${req.met ? 'text-green-700' : 'text-gray-500'}`}>
+                        <span
+                          className={`text-sm ${
+                            req.met ? "text-green-700" : "text-gray-500"
+                          }`}
+                        >
                           {req.text}
                         </span>
                       </div>
@@ -195,7 +211,7 @@ export const SignUpPage: React.FC = () => {
               <div className="relative">
                 <Input
                   label="Confirm password"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
@@ -203,11 +219,13 @@ export const SignUpPage: React.FC = () => {
                   placeholder="Confirm your password"
                   autoComplete="new-password"
                   required
+                  className="pr-12"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 z-10"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{ top: "2.25rem" }}
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -225,12 +243,15 @@ export const SignUpPage: React.FC = () => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   required
                 />
-                <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-900">
-                  I agree to the{' '}
+                <label
+                  htmlFor="agree-terms"
+                  className="ml-2 block text-sm text-gray-900"
+                >
+                  I agree to the{" "}
                   <a href="#" className="text-blue-600 hover:text-blue-500">
                     Terms of Service
-                  </a>{' '}
-                  and{' '}
+                  </a>{" "}
+                  and{" "}
                   <a href="#" className="text-blue-600 hover:text-blue-500">
                     Privacy Policy
                   </a>
@@ -253,7 +274,9 @@ export const SignUpPage: React.FC = () => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Already have an account?</span>
+                  <span className="px-2 bg-white text-gray-500">
+                    Already have an account?
+                  </span>
                 </div>
               </div>
 
